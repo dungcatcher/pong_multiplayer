@@ -8,8 +8,10 @@ PORT = 65432
 class GameClient:
     def __init__(self):
         self.window = pygame.display.set_mode((960, 540))
-        self.connected = False
+        self.clock = pygame.time.Clock()
+
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         self.connect_with_server()
 
     def connect_with_server(self):
@@ -22,16 +24,18 @@ class GameClient:
                 exit()
 
     def send_data_to_server(self, data):
-        self.socket.sendall(data)
+        self.socket.sendall(data.encode())
         result = self.socket.recv(1024)
         print(result)
 
     def update(self):
+        self.clock.tick(60)
+
         key_input = pygame.key.get_pressed()
         if key_input[pygame.K_UP]:
-            self.send_data_to_server(b"UP")
+            self.send_data_to_server("UP")
         elif key_input[pygame.K_DOWN]:
-            self.send_data_to_server(b"DOWN")
+            self.send_data_to_server("DOWN")
 
         self.draw()
 
